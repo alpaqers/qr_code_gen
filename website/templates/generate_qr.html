@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Generate QR Code{% endblock %}
+
+{% block content %}
+<div class="mt-5">
+    <h2>Generate QR Code</h2>
+    <form method="POST" action="/generate_qr">
+        <div class="form-group">
+            <label for="data">Enter data for QR Code:</label>
+            <input type="text" class="form-control" id="data" name="data" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate</button>
+    </form>
+
+    {% if qr_code_url %}
+    <div class="mt-4">
+        <h5>Your QR Code:</h5>
+        <img src="{{ qr_code_url }}" alt="QR Code">
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
