@@ -13,6 +13,12 @@ from datetime import datetime
 
 views = Blueprint('views', __name__)
 
+@views.route('/initdb')
+def init_db():
+    from . import db
+    db.create_all()
+    return "Baza danych zainicjalizowana!"
+
 @views.route('/generate_qr', methods=['GET', 'POST'])
 def generate_qr():
     if request.method == 'POST':
