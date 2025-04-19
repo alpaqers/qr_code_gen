@@ -22,7 +22,7 @@ def generate_qr():
     if request.method == 'POST':
         data = request.form.get('data')
         size = int(request.form.get('size', 10))
-        color_fg = request.form.get('color_fg', '#000000')
+        color_fg = request.form.get('color', '#000000')
         color_bg = request.form.get('color_bg', '#FFFFFF')
         logo = request.files.get('logo')
 
@@ -31,9 +31,18 @@ def generate_qr():
             return redirect(url_for('views.generate_qr'))
 
         logo_filename = None
+        if logo:
+            print("logo istnieje")
+        else:
+            print("logo nie istnieje")
+
         if logo and logo.filename:
+            os.makedirs('static', exist_ok=True)
             logo_filename = os.path.join('static', logo.filename)
             logo.save(logo_filename)
+            print("Zapisano logo do:", logo_filename)
+            print("Plik istnieje?", os.path.exists(logo_filename))
+
 
         new_code = QRCode(
             data=data,
@@ -50,7 +59,7 @@ def generate_qr():
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_H,
             box_size=size,
-            border=4,
+            border=2,
         )
         qr.add_data(data)
         qr.make(fit=True)

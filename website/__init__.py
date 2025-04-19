@@ -2,13 +2,17 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_login import LoginManager
+from dotenv import load_dotenv
+load_dotenv()
+from config import DevelopmentConfig, ProductionConfig
+
+config = DevelopmentConfig if os.getenv('FLASK_ENV') == 'development' else ProductionConfig
 
 db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'qwerty'
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    app.config.from_object(config)
     db.init_app(app)
 
     from .views import views
