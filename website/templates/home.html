@@ -1,21 +1,27 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-    %}
-    <h1 align="center">Notes</h1>
-    <ul class="list-group list-group-flush" id="notes">
-      {% for note in user.notes %}
-      <li class="list-group-item">
-        {{ note.data }}
-        <button type="button" class="close" onClick="deleteNote({{ note.id }})">
-            <span aria-hidden="true">&times;</span>
-        </button>
-      </li>
-      {% endfor %}
-    </ul>
-    <form method="POST">
-      <textarea name="note" id="note" class="form-control"></textarea>
-      <br />
-      <div align="center">
-        <button type="submit" class="btn btn-primary">Add Note</button>
-      </div>
-    </form>
-    {% endblock %}
+{% extends "base.html" %}
+{% block title %}TwójQR – Generator Kodów{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1>TwójQR</h1>
+    <p class="lead">Twórz spersonalizowane kody QR z własnym logo i kolorami.</p>
+    <a href="/generate_qr" class="btn btn-lg btn-primary mt-3">Generuj kod QR</a>
+</div>
+
+<hr class="my-5">
+
+<div class="row text-center">
+    <div class="col-md-4">
+        <h4>🎨 Personalizacja</h4>
+        <p>Wybierz kolory, rozmiar i dodaj własne logo.</p>
+    </div>
+    <div class="col-md-4">
+        <h4>📊 Statystyki (wkrótce)</h4>
+        <p>Śledź liczbę skanów, daty i lokalizacje.</p>
+    </div>
+    <div class="col-md-4">
+        <h4>🔒 Prywatność</h4>
+        <p>Twoje dane są przechowywane bezpiecznie i tylko dla Ciebie.</p>
+    </div>
+</div>
+{% endblock %}
