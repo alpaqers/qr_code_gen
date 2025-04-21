@@ -121,10 +121,14 @@ def generate_qr():
 
             buf = io.BytesIO()
             img.save(buf, format='PNG')
+            buf.seek(0)
+
+            # 1. Do przeglądarki (widok)
             img_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
             img_url = f"data:image/png;base64,{img_b64}"
+
+            # 2. Do sesji (do pobrania)
             buf.seek(0)
-            session.pop('qr_image', None)
             session['qr_image'] = base64.b64encode(buf.read()).decode('utf-8')
         else:
             flash('Please enter some data.', 'error')
