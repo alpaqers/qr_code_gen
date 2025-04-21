@@ -9,6 +9,13 @@
         <div class="form-group">
             <label for="data">Enter data for QR Code:</label>
             <input type="text" class="form-control" id="data" name="data" required>
+            <button type="button" class="btn btn-primary" id="toggle-bulk">Generacja seryjna</button>
+            <div id="bulk" style="display:none;">
+                <input type="hidden" id="mode" name="mode" value="single">
+                <label for="upload_file">Upload file (CSV format):</label>
+                <input type="file" class="form-control-file" id="upload_file" name="upload_file" accept=".csv">
+            </div>
+            <br>
             <label for="size">Select size:</label>
             <input type="range" class="form-control" id="size" name="size" min="1" max="50" step="5" value="10">
             <label for="color">Select color:</label>
@@ -19,12 +26,32 @@
             <input type="file" class="form-control-file" id="logo" name="logo" accept="image/*">
         </div>
         <button type="submit" class="btn btn-primary">Generate</button>
+
+        <script>
+            document.getElementById('toggle-bulk').addEventListener('click', function() {
+                var bulkOptions = document.getElementById('bulk');
+                var dataField = document.getElementById('data');
+                var modeField = document.getElementById('mode');
+                if (bulkOptions.style.display === 'none') {
+                    modeField.value = 'bulk'; // Set mode to bulk
+                    bulkOptions.style.display = 'block';
+                    dataField.disabled = true; // Disable the single data input
+                } else {
+                    modeField.value = 'single'; // Set mode to single
+                    bulkOptions.style.display = 'none';
+                    dataField.disabled = false; // Enable the single data input
+                }
+            });
+        </script>
     </form>
 
     {% if qr_code_url %}
     <div class="mt-4">
         <h5>Your QR Code:</h5>
         <img src="{{ qr_code_url }}" alt="QR Code">
+    </div>
+    <div class="mt-3">
+      <a href="{{ url_for('views.download_qr') }}" class="btn btn-success">Pobierz kod QR</a>
     </div>
     {% endif %}
 </div>
