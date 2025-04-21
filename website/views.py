@@ -121,15 +121,18 @@ def generate_qr():
 
             buf = io.BytesIO()
             img.save(buf, format='PNG')
+
+            # Przesuwamy wskaźnik bufora na początek
             buf.seek(0)
 
-            # 1. Do przeglądarki (widok)
-            img_b64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+            # 1. Zapisujemy do sesji (do pobrania)
+            session['qr_image'] = base64.b64encode(buf.read()).decode('utf-8')
+
+            # 2. Przesuwamy znowu i generujemy URL do podglądu
+            buf.seek(0)
+            img_b64 = base64.b64encode(buf.read()).decode('utf-8')
             img_url = f"data:image/png;base64,{img_b64}"
 
-            # 2. Do sesji (do pobrania)
-            buf.seek(0)
-            session['qr_image'] = base64.b64encode(buf.read()).decode('utf-8')
         else:
             flash('Please enter some data.', 'error')
             return redirect(url_for('views.generate_qr'))
