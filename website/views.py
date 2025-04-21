@@ -62,10 +62,15 @@ def home():
 @views.route('/generate_qr', methods=['GET', 'POST'])
 @login_required
 def generate_qr():
-    qr_code_url = None
     if request.method == 'GET':
-        session.pop('qr_image', None)
+        qr_image = session.pop('qr_image', None)
+        qr_code_url = None
+
+        if qr_image:
+            qr_code_url = f"data:image/png;base64,{qr_image}"
+
         return render_template("generate_qr.html", qr_code_url=qr_code_url)
+    
     if request.method == 'POST':
         data = request.form.get('data')
         size = int(request.form.get('size', 10))
@@ -75,10 +80,10 @@ def generate_qr():
         file = request.files.get('upload_file')
         mode = request.form.get('mode', 'single')
 
-        print(f"Mode: {mode}, Data: {data}, Size: {size}, Color FG: {color_fg}, Color BG: {color_bg}")
+        #print(f"Mode: {mode}, Data: {data}, Size: {size}, Color FG: {color_fg}, Color BG: {color_bg}")
 
-        if not file:
-            print("No file uploaded.")
+        #if not file:
+        #    print("No file uploaded.")
 
         if mode == 'bulk' and file:
             stream = io.StringIO(file.stream.read().decode("utf-8"))
@@ -118,7 +123,7 @@ def generate_qr():
             flash('Please enter some data.', 'error')
             return redirect(url_for('views.generate_qr'))
 
-        return render_template("generate_qr.html", qr_code_url=img_url)
+        return redirect(url_for('views.generate_qr'))
 
     return render_template("generate_qr.html", qr_code_url=qr_code_url)
 
