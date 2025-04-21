@@ -62,15 +62,22 @@ def home():
 @views.route('/generate_qr', methods=['GET', 'POST'])
 @login_required
 def generate_qr():
+    qr_code_url = None
     if request.method == 'GET':
-        qr_image = session.pop('qr_image', None)
-        qr_code_url = None
 
-        if qr_image:
-            qr_code_url = f"data:image/png;base64,{qr_image}"
-
-        return render_template("generate_qr.html", qr_code_url=qr_code_url)
-    
+        # ustawiamy wartości domyślne
+        data = ""
+        size = 10
+        color_fg = "#000000"
+        color_bg = "#FFFFFF"
+        
+        return render_template("generate_qr.html",
+        qr_code_url=qr_code_url,
+        data=data,
+        size=size,
+        color_fg=color_fg,
+        color_bg=color_bg
+        )
     if request.method == 'POST':
         data = request.form.get('data')
         size = int(request.form.get('size', 10))
@@ -123,9 +130,10 @@ def generate_qr():
             flash('Please enter some data.', 'error')
             return redirect(url_for('views.generate_qr'))
 
-        return redirect(url_for('views.generate_qr'))
+        return render_template("generate_qr.html", qr_code_url=img_url, 
+                               data=data, size=size, color_fg=color_fg, color_bg=color_bg)
 
-    return render_template("generate_qr.html", qr_code_url=qr_code_url)
+    return render_template("generate_qr.html")
 
 @views.route('/download_qr')
 @login_required

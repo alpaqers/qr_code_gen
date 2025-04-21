@@ -8,7 +8,7 @@
     <form method="POST" action="/generate_qr" enctype="multipart/form-data">
         <div class="form-group">
             <label for="data">Enter data for QR Code:</label>
-            <input type="text" class="form-control" id="data" name="data" required>
+            <input type="text" class="form-control" id="data" name="data" value="{{ data or '' }}" required>
             <button type="button" class="btn btn-primary" id="toggle-bulk">Generacja seryjna</button>
             <div id="bulk" style="display:none;">
                 <input type="hidden" id="mode" name="mode" value="single">
@@ -17,11 +17,11 @@
             </div>
             <br>
             <label for="size">Select size:</label>
-            <input type="range" class="form-control" id="size" name="size" min="1" max="50" step="5" value="10">
+            <input type="range" class="form-control" id="size" name="size" min="1" max="50" step="5" value="{{size or 10}}">
             <label for="color">Select color:</label>
-            <input type="color" class="form-control" id="color" name="color" value="#000000">
+            <input type="color" class="form-control" id="color" name="color" value="{{color_fg or '#000000'}}">
             <label for="bg_color">Select background color:</label>
-            <input type="color" class="form-control" id="bg_color" name="color_bg" value="#FFFFFF">
+            <input type="color" class="form-control" id="bg_color" name="color_bg" value="{{ color_bg or '#FFFFFF' }}">
             <label for="logo">Upload logo (optional):</label>
             <input type="file" class="form-control-file" id="logo" name="logo" accept="image/*">
         </div>
