@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, send_file, redirect, url_for, session
+from flask import Blueprint, render_template, request, flash, send_file, redirect, url_for, session, current_app
 from flask_login import login_required, current_user
 from .models import QRCode
 from . import db
@@ -126,7 +126,7 @@ def generate_qr():
             buf.seek(0)
 
             # 1. Zapisujemy do sesji (do pobrania)
-            session['qr_image'] = base64.b64encode(buf.read()).decode('utf-8')
+            current_app.qr_image = buf.read()
 
             # 2. Przesuwamy znowu i generujemy URL do podglądu
             buf.seek(0)
@@ -146,11 +146,11 @@ def generate_qr():
 @login_required
 def download_qr():
 
-    if 'qr_image' not in session:
+    if not hasattr(current_app, 'qr_image'):
         flash('No QR code found to download.', 'error')
         return redirect(url_for('views.generate_qr'))
 
-    img_data = base64.b64decode(session['qr_image'])
-    buf = io.BytesIO(img_data)
+    buf = io.BytesIO(current_app.qr_image)
     buf.seek(0)
     return send_file(buf, mimetype='image/png', as_attachment=True, download_name='qr_code.png')
+
