@@ -8,19 +8,15 @@
     <h2>Historia kodów QR</h2>
     <table>
     <tr>
-        <th>Dane</th>
-        <th>Rozmiar</th>
-        <th>Kolor QR</th>
-        <th>Kolor tła</th>
-        <th>Data wykonania</th>
+        <th>Podgląd</th>
+        <th>Link</th>
+        <th>Data wygenerowania</th>
     </tr>
-    {% for qr in qrs %}
+    {% for item in previews %}
     <tr>
-        <td>{{ qr.data }}</td>
-        <td>{{ qr.size }}</td>
-        <td>{{ qr.color_fg }}</td>
-        <td>{{ qr.color_bg }}</td>
-        <td>{{ qr.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td><img src="data:image/png;base64,{{ item.preview }}" width="80"></td>
+        <td>{{ item.link }}</td>
+        <td>{{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
     </tr>
     {% endfor %}
     </table>

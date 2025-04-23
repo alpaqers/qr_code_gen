@@ -53,6 +53,18 @@ def generate_qr_image(data, size, color_fg, color_bg, logo_stream=None):
 
     return img
 
+def generate_preview_qr(color_fg, color_bg):
+    qr = qrcode.QRCode(box_size=2, border=1)
+    qr.add_data("Preview")
+    qr.make(fit=True)
+    img = qr.make_image(fill_color=color_fg, back_color=color_bg).convert('RGB')
+
+    buf = io.BytesIO()
+    img.save(buf, format='PNG')
+    buf.seek(0)
+    return base64.b64encode(buf.read()).decode('utf-8')
+
+
 @views.route('/', methods=['GET'])
 @login_required
 def home():
@@ -157,6 +169,16 @@ def download_qr():
 @login_required
 def history():
     #select wierszy z tabeli aktualnego użytkopwnika, posortowane malejąco po dacie
-    qrs = QRCode.query.filter_by(user_id=current_user.id).order_by(QRCode.created_at.desc()).all()
-    return render_template("history.html", user=current_user, qrs=qrs)
+    qrs = QRCode.query.filter_by(user_id=current_user.id).order_by(QRCode.created_at.desc()).limit(20)
+
+    previews = []
+    for qr in qrs:
+        previews.append({
+            'id': qr.id,
+            'link': qr.data,
+            'created_at': qr.created_at,
+            'preview': generate_preview_qr(qr.color_fg, qr.color_bg)
+        })
+
+    return render_template("history.html", previews=previews)
 
