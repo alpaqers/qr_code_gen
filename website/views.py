@@ -8,7 +8,6 @@ from PIL import Image
 import io
 import csv
 import base64
-import os
 from zipfile import ZipFile
 
 views = Blueprint('views', __name__)
@@ -153,4 +152,11 @@ def download_qr():
     buf = io.BytesIO(current_app.qr_image)
     buf.seek(0)
     return send_file(buf, mimetype='image/png', as_attachment=True, download_name='qr_code.png')
+
+@views.route('/history', methods=['GET', 'POST'])
+@login_required
+def history():
+    #select wierszy z tabeli aktualnego użytkopwnika, posortowane malejąco po dacie
+    qrs = QRCode.query.filter_by(user_id=current_user.id).order_by(QRCode.created_at.desc()).all()
+    return render_template("history.html", user=current_user, qrs=qrs)
 
